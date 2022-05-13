@@ -13,7 +13,7 @@ const checkIn = async (cookie) => {
             'content-length': 26
         },
         data: {
-            token: "glados_network"
+            token: "glados.network"
         }
     });
 };
