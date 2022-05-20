@@ -1,6 +1,8 @@
 const axios = require('axios');
-const COOKIES = '这里填入你的cookies';
+const COOKIES = '这里填入你的cookie';
 
+
+const Bytes2GB = 1073741824;
 const checkIn = async (cookie) => {
     return axios({
         method: 'post',
@@ -34,10 +36,13 @@ const checkInAndGetStatus = async (cookie) => {
     const userStatus = (await getStatus(cookie))?.data?.data;
     const email = userStatus?.email;
     const leftDays = parseInt(userStatus?.leftDays);
-
+    const traffic = (parseInt(userStatus?.traffic) / Bytes2GB).toFixed(2);
+    const usedDays = parseInt(userStatus?.days);
     return {
         '账号': email,
         '天数': leftDays,
+        '流量': traffic,
+        '已用天数': usedDays,
         '签到情况': checkInMessage
     };
 };
@@ -74,11 +79,16 @@ const printLog = (infos) => {
     const contentEmail = infos?.[0]['账号'];
     const contentLeftDays = infos?.[0]['天数'];
     const contentCheckInMessage = infos?.[0]['签到情况'];
+    const contentTraffic = infos?.[0]['流量'];
+    const contentUsedDays = infos?.[0]['已用天数'];
     const contentLine = '\n';
+    const titleSpace = 4;
 
     const content = (
-        '账号: ' + `${contentEmail}`.padEnd(contentEmail.length) + contentLine +
-        '天数: ' + `${contentLeftDays}`.padEnd(contentLeftDays.toString().length) + contentLine +
+        '账号: ' + `${contentEmail}`.padEnd(contentEmail.length + titleSpace) + contentLine +
+        '天数: ' + `${contentLeftDays}`.padEnd(contentLeftDays.toString().length + titleSpace) + contentLine +
+        '流量: ' + `${contentTraffic}`.padEnd(contentTraffic.length) + 'GB'.padEnd('GB'.length + titleSpace) + contentLine +
+        '已用天数: ' + `${contentUsedDays}`.padEnd(contentUsedDays.toString().length + titleSpace) + contentLine + 
         '签到情况: ' + `${contentCheckInMessage}`
     ).slice(0, 100);
 
